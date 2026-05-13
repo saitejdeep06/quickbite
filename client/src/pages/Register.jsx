@@ -1,105 +1,160 @@
 import { useState } from "react";
-
 import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
+import API from "../config/api";
 
-import {
-  useNavigate,
-  Link,
-} from "react-router-dom";
-
-export default function Register() {
+const Register = () => {
   const navigate = useNavigate();
 
-  const [name, setName] = useState("");
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
 
-  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const [password, setPassword] =
-    useState("");
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
 
-  const [loading, setLoading] =
-    useState(false);
+  const handleRegister = async (e) => {
+    e.preventDefault();
 
-  const registerUser = async () => {
     try {
       setLoading(true);
 
       await axios.post(
-        "http://localhost:5000/api/auth/register",
-        {
-          name,
-          email,
-          password,
-        }
+        `${API}/api/auth/register`,
+        formData
       );
 
-      alert(
-        "Registration Successful 🎉"
-      );
+      alert("Registration Successful 🎉");
 
       navigate("/login");
-    } catch (err) {
-      alert(
-        err.response?.data?.message
-      );
+    } catch (error) {
+      alert(error.response?.data?.message || "Register Failed");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-gradient-to-r from-orange-500 to-red-500">
-      <div className="bg-white p-10 rounded-3xl shadow-2xl w-[450px]">
-        <h1 className="text-5xl font-bold text-center mb-10">
+    <div
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        background:
+          "linear-gradient(to right, orange, #ff4d4d)",
+      }}
+    >
+      <form
+        onSubmit={handleRegister}
+        style={{
+          background: "white",
+          padding: "40px",
+          borderRadius: "20px",
+          width: "400px",
+        }}
+      >
+        <h1
+          style={{
+            textAlign: "center",
+            marginBottom: "30px",
+            fontSize: "60px",
+          }}
+        >
           Register 🚀
         </h1>
 
         <input
           type="text"
-          placeholder="Enter Name"
-          className="w-full border p-4 rounded-2xl mb-5 text-lg"
-          onChange={(e) =>
-            setName(e.target.value)
-          }
+          name="name"
+          placeholder="Name"
+          value={formData.name}
+          onChange={handleChange}
+          required
+          style={{
+            width: "100%",
+            padding: "18px",
+            marginBottom: "20px",
+            borderRadius: "10px",
+            border: "none",
+            background: "#e9eefc",
+            fontSize: "18px",
+          }}
         />
 
         <input
           type="email"
-          placeholder="Enter Email"
-          className="w-full border p-4 rounded-2xl mb-5 text-lg"
-          onChange={(e) =>
-            setEmail(e.target.value)
-          }
+          name="email"
+          placeholder="Email"
+          value={formData.email}
+          onChange={handleChange}
+          required
+          style={{
+            width: "100%",
+            padding: "18px",
+            marginBottom: "20px",
+            borderRadius: "10px",
+            border: "none",
+            background: "#e9eefc",
+            fontSize: "18px",
+          }}
         />
 
         <input
           type="password"
-          placeholder="Enter Password"
-          className="w-full border p-4 rounded-2xl mb-8 text-lg"
-          onChange={(e) =>
-            setPassword(e.target.value)
-          }
+          name="password"
+          placeholder="Password"
+          value={formData.password}
+          onChange={handleChange}
+          required
+          style={{
+            width: "100%",
+            padding: "18px",
+            marginBottom: "20px",
+            borderRadius: "10px",
+            border: "none",
+            background: "#e9eefc",
+            fontSize: "18px",
+          }}
         />
 
         <button
-          onClick={registerUser}
-          className="w-full bg-black text-white py-4 rounded-2xl text-xl font-bold"
+          type="submit"
+          style={{
+            width: "100%",
+            padding: "18px",
+            background: "black",
+            color: "white",
+            border: "none",
+            borderRadius: "10px",
+            fontSize: "22px",
+            cursor: "pointer",
+          }}
         >
-          {loading
-            ? "Loading..."
-            : "Register"}
+          {loading ? "Loading..." : "Register"}
         </button>
 
-        <p className="text-center mt-6 text-lg">
-          Already have an account?
-          <Link
-            to="/login"
-            className="text-orange-500 font-bold ml-2"
-          >
-            Login
-          </Link>
+        <p
+          style={{
+            marginTop: "20px",
+            textAlign: "center",
+            fontSize: "18px",
+          }}
+        >
+          Already have an account?{" "}
+          <Link to="/login">Login</Link>
         </p>
-      </div>
+      </form>
     </div>
   );
-}
+};
+
+export default Register;
