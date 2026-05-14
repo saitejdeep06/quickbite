@@ -1,14 +1,13 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import Home from "./pages/Home";
-import Foods from "./pages/Foods";
-import Cart from "./pages/Cart";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-
-import Checkout from "./pages/Checkout";
-import Success from "./pages/Success";
-import Orders from "./pages/Orders";
+import Home from "./pages/Home.jsx";
+import Foods from "./pages/Foods.jsx";
+import Cart from "./pages/Cart.jsx";
+import Login from "./pages/Login.jsx";
+import Register from "./pages/Register.jsx";
+import Checkout from "./pages/Checkout.jsx";
+import Orders from "./pages/Orders.jsx";
+import Success from "./pages/Success.jsx";
 
 function App() {
   return (
@@ -30,13 +29,13 @@ function App() {
         />
 
         <Route
-          path="/success"
-          element={<Success />}
+          path="/orders"
+          element={<Orders />}
         />
 
         <Route
-          path="/orders"
-          element={<Orders />}
+          path="/success"
+          element={<Success />}
         />
       </Routes>
     </BrowserRouter>
