@@ -1,10 +1,10 @@
-import { useEffect, useState, useContext } from "react";
 import axios from "axios";
-
+import { useEffect, useState, useContext } from "react";
 import { CartContext } from "../context/CartContext";
 
-export default function Home() {
+function Home() {
   const [foods, setFoods] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const { addToCart } = useContext(CartContext);
 
@@ -14,21 +14,32 @@ export default function Home() {
 
   const fetchFoods = async () => {
     try {
-      const res = await axios.get(
-        "http://localhost:5000/api/foods"
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/api/foods`
       );
 
-      console.log(res.data);
-
-      setFoods(res.data);
+      setFoods(response.data);
     } catch (error) {
       console.log(error);
+      alert("Failed to load foods");
+    } finally {
+      setLoading(false);
     }
   };
 
+  if (loading) {
+    return (
+      <h1 style={{ padding: "40px" }}>
+        Loading Foods...
+      </h1>
+    );
+  }
+
   return (
     <div style={{ padding: "20px" }}>
-      <h1>QuickBite Foods 🍔</h1>
+      <h1 style={{ marginBottom: "30px" }}>
+        QuickBite Foods 🍔
+      </h1>
 
       <div
         style={{
@@ -36,7 +47,6 @@ export default function Home() {
           gridTemplateColumns:
             "repeat(auto-fit,minmax(250px,1fr))",
           gap: "20px",
-          marginTop: "20px",
         }}
       >
         {foods.map((food) => (
@@ -46,7 +56,6 @@ export default function Home() {
               border: "1px solid #ddd",
               borderRadius: "10px",
               padding: "15px",
-              background: "white",
             }}
           >
             <img
@@ -64,7 +73,7 @@ export default function Home() {
 
             <p>{food.description}</p>
 
-            <h3>₹{food.price}</h3>
+            <h2>₹{food.price}</h2>
 
             <button
               onClick={() => addToCart(food)}
@@ -85,3 +94,5 @@ export default function Home() {
     </div>
   );
 }
+
+export default Home;
