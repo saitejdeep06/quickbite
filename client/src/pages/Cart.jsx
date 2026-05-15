@@ -1,308 +1,157 @@
 import { useContext } from "react";
-
 import { CartContext } from "../context/CartContext";
 
-import { useNavigate } from "react-router-dom";
+export default function Cart() {
+  const { cart, addToCart, removeFromCart } =
+    useContext(CartContext);
 
-const Cart = () => {
-  const {
-    cartItems,
-    increaseQuantity,
-    decreaseQuantity,
-    removeFromCart,
-  } = useContext(CartContext);
+  const increaseQty = (item) => {
+    addToCart(item);
+  };
 
-  const navigate = useNavigate();
+  const decreaseQty = (id, qty) => {
+    if (qty === 1) {
+      removeFromCart(id);
+      return;
+    }
 
-  const subtotal = cartItems.reduce(
-    (acc, item) =>
-      acc + item.price * item.quantity,
+    const updatedCart = cart.map((item) =>
+      item._id === id
+        ? { ...item, qty: item.qty - 1 }
+        : item
+    );
+
+    localStorage.setItem(
+      "quickbite-cart",
+      JSON.stringify(updatedCart)
+    );
+
+    window.location.reload();
+  };
+
+  const total = cart.reduce(
+    (acc, item) => acc + item.price * item.qty,
     0
   );
 
-  const deliveryFee = 50;
-
-  const gst = subtotal * 0.18;
-
-  const finalTotal =
-    subtotal + deliveryFee + gst;
-
   return (
-    <div
-      style={{
-        padding: "40px",
-        background: "#f4f4f4",
-        minHeight: "100vh",
-      }}
-    >
-      <h1
-        style={{
-          marginBottom: "30px",
-        }}
-      >
-        🛒 Your Cart
-      </h1>
+    <div style={{ padding: "20px" }}>
+      <h1>Cart 🛒</h1>
 
-      {cartItems.length === 0 ? (
-        <h2>Your Cart Is Empty</h2>
+      {cart.length === 0 ? (
+        <h2>Cart is Empty</h2>
       ) : (
         <>
-          {cartItems.map((item) => (
-            <div
-              key={item.id}
-              style={{
-                background: "white",
-                padding: "20px",
-                borderRadius: "20px",
-                marginBottom: "25px",
-                display: "flex",
-                justifyContent:
-                  "space-between",
-                alignItems: "center",
-                boxShadow:
-                  "0 5px 15px rgba(0,0,0,0.1)",
-              }}
-            >
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns:
+                "repeat(auto-fit,minmax(250px,1fr))",
+              gap: "20px",
+              marginTop: "20px",
+            }}
+          >
+            {cart.map((item) => (
               <div
+                key={item._id}
                 style={{
-                  display: "flex",
-                  gap: "20px",
-                  alignItems: "center",
+                  border: "1px solid #ddd",
+                  borderRadius: "10px",
+                  padding: "15px",
+                  background: "white",
                 }}
               >
                 <img
                   src={item.image}
                   alt={item.name}
                   style={{
-                    width: "170px",
-                    height: "130px",
+                    width: "100%",
+                    height: "200px",
                     objectFit: "cover",
-                    borderRadius: "15px",
+                    borderRadius: "10px",
                   }}
                 />
 
-                <div>
-                  <h2>{item.name}</h2>
+                <h2>{item.name}</h2>
 
-                  <p
+                <h3>₹{item.price}</h3>
+
+                <p>
+                  Quantity:
+                  <button
+                    onClick={() =>
+                      decreaseQty(
+                        item._id,
+                        item.qty
+                      )
+                    }
                     style={{
-                      color: "gray",
+                      marginLeft: "10px",
+                      marginRight: "10px",
                     }}
                   >
-                    ₹ {item.price}
-                  </p>
+                    -
+                  </button>
 
-                  <p>
-                    Total: ₹{" "}
-                    {item.price *
-                      item.quantity}
-                  </p>
-                </div>
-              </div>
+                  {item.qty}
 
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "15px",
-                }}
-              >
-                <button
-                  onClick={() =>
-                    decreaseQuantity(
-                      item.id
-                    )
-                  }
-                  style={{
-                    padding:
-                      "10px 15px",
-                    background:
-                      "black",
-                    color: "white",
-                    border: "none",
-                    borderRadius:
-                      "10px",
-                    cursor: "pointer",
-                    fontSize: "18px",
-                  }}
-                >
-                  -
-                </button>
+                  <button
+                    onClick={() =>
+                      increaseQty(item)
+                    }
+                    style={{
+                      marginLeft: "10px",
+                    }}
+                  >
+                    +
+                  </button>
+                </p>
 
-                <h2>
-                  {item.quantity}
-                </h2>
+                <h3>
+                  Total: ₹
+                  {item.price * item.qty}
+                </h3>
 
                 <button
                   onClick={() =>
-                    increaseQuantity(
-                      item.id
-                    )
+                    removeFromCart(item._id)
                   }
                   style={{
-                    padding:
-                      "10px 15px",
-                    background:
-                      "black",
-                    color: "white",
-                    border: "none",
-                    borderRadius:
-                      "10px",
-                    cursor: "pointer",
-                    fontSize: "18px",
-                  }}
-                >
-                  +
-                </button>
-
-                <button
-                  onClick={() =>
-                    removeFromCart(
-                      item.id
-                    )
-                  }
-                  style={{
-                    padding:
-                      "12px 18px",
                     background: "red",
                     color: "white",
+                    padding: "10px",
                     border: "none",
-                    borderRadius:
-                      "10px",
+                    borderRadius: "5px",
                     cursor: "pointer",
                   }}
                 >
                   Remove
                 </button>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
 
-          <div
-            style={{
-              background: "white",
-              padding: "35px",
-              borderRadius: "20px",
-              marginTop: "40px",
-              boxShadow:
-                "0 5px 15px rgba(0,0,0,0.1)",
-            }}
-          >
-            <h2
-              style={{
-                marginBottom: "25px",
-              }}
-            >
-              🧾 Checkout Summary
-            </h2>
+          <h2 style={{ marginTop: "30px" }}>
+            Grand Total: ₹{total}
+          </h2>
 
-            <div
-              style={{
-                display: "flex",
-                justifyContent:
-                  "space-between",
-                marginBottom: "15px",
-              }}
-            >
-              <p>Total Items</p>
-
-              <p>
-                {cartItems.length}
-              </p>
-            </div>
-
-            <div
-              style={{
-                display: "flex",
-                justifyContent:
-                  "space-between",
-                marginBottom: "15px",
-              }}
-            >
-              <p>Subtotal</p>
-
-              <p>
-                ₹{" "}
-                {subtotal.toFixed(2)}
-              </p>
-            </div>
-
-            <div
-              style={{
-                display: "flex",
-                justifyContent:
-                  "space-between",
-                marginBottom: "15px",
-              }}
-            >
-              <p>Delivery Fee</p>
-
-              <p>
-                ₹{" "}
-                {deliveryFee.toFixed(
-                  2
-                )}
-              </p>
-            </div>
-
-            <div
-              style={{
-                display: "flex",
-                justifyContent:
-                  "space-between",
-                marginBottom: "15px",
-              }}
-            >
-              <p>GST (18%)</p>
-
-              <p>
-                ₹ {gst.toFixed(2)}
-              </p>
-            </div>
-
-            <hr />
-
-            <div
-              style={{
-                display: "flex",
-                justifyContent:
-                  "space-between",
-                marginTop: "20px",
-                marginBottom: "30px",
-              }}
-            >
-              <h1>Final Total</h1>
-
-              <h1>
-                ₹{" "}
-                {finalTotal.toFixed(
-                  2
-                )}
-              </h1>
-            </div>
-
+          <a href="/checkout">
             <button
-              onClick={() =>
-                navigate("/checkout")
-              }
               style={{
-                width: "100%",
-                padding: "18px",
-                background: "black",
+                marginTop: "20px",
+                background: "green",
                 color: "white",
+                padding: "15px",
                 border: "none",
-                borderRadius: "10px",
+                borderRadius: "5px",
                 cursor: "pointer",
-                fontSize: "18px",
               }}
             >
               Proceed To Checkout
             </button>
-          </div>
+          </a>
         </>
       )}
     </div>
   );
-};
-
-export default Cart;
+}

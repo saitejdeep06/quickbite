@@ -1,45 +1,63 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Link,
+} from "react-router-dom";
 
-import Home from "./pages/Home.jsx";
-import Foods from "./pages/Foods.jsx";
-import Cart from "./pages/Cart.jsx";
-import Login from "./pages/Login.jsx";
-import Register from "./pages/Register.jsx";
-import Checkout from "./pages/Checkout.jsx";
-import Orders from "./pages/Orders.jsx";
-import Success from "./pages/Success.jsx";
+import Home from "./pages/Home";
+import Cart from "./pages/Cart";
+import Orders from "./pages/Orders";
+import Login from "./pages/Login";
+import Checkout from "./pages/Checkout";
 
-function App() {
+export default function App() {
   return (
     <BrowserRouter>
+      <nav
+        style={{
+          background: "black",
+          color: "white",
+          padding: "20px",
+          display: "flex",
+          justifyContent: "space-between",
+        }}
+      >
+        <h1>QuickBite 🍔</h1>
+
+        <div style={{ display: "flex", gap: "20px" }}>
+          <Link style={{ color: "white" }} to="/">
+            Home
+          </Link>
+
+          <Link style={{ color: "white" }} to="/cart">
+            Cart
+          </Link>
+
+          <Link style={{ color: "white" }} to="/orders">
+            Orders
+          </Link>
+
+          <Link style={{ color: "white" }} to="/login">
+            Login
+          </Link>
+        </div>
+      </nav>
+
       <Routes>
         <Route path="/" element={<Home />} />
 
-        <Route path="/foods" element={<Foods />} />
-
         <Route path="/cart" element={<Cart />} />
 
-        <Route path="/login" element={<Login />} />
+        <Route path="/orders" element={<Orders />} />
 
-        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
 
         <Route
           path="/checkout"
           element={<Checkout />}
         />
-
-        <Route
-          path="/orders"
-          element={<Orders />}
-        />
-
-        <Route
-          path="/success"
-          element={<Success />}
-        />
       </Routes>
     </BrowserRouter>
   );
 }
-
-export default App;
