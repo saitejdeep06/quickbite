@@ -1,157 +1,77 @@
-import { useContext } from "react";
-import { CartContext } from "../context/CartContext";
+// client/src/pages/Cart.jsx
 
-export default function Cart() {
-  const { cart, addToCart, removeFromCart } =
-    useContext(CartContext);
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-  const increaseQty = (item) => {
-    addToCart(item);
-  };
+function Cart() {
+  const [cart, setCart] = useState([]);
+  const navigate = useNavigate();
 
-  const decreaseQty = (id, qty) => {
-    if (qty === 1) {
-      removeFromCart(id);
-      return;
-    }
+  useEffect(() => {
+    const items =
+      JSON.parse(localStorage.getItem("cart")) || [];
 
-    const updatedCart = cart.map((item) =>
-      item._id === id
-        ? { ...item, qty: item.qty - 1 }
-        : item
-    );
-
-    localStorage.setItem(
-      "quickbite-cart",
-      JSON.stringify(updatedCart)
-    );
-
-    window.location.reload();
-  };
+    setCart(items);
+  }, []);
 
   const total = cart.reduce(
-    (acc, item) => acc + item.price * item.qty,
+    (acc, item) => acc + item.price,
     0
   );
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>Cart 🛒</h1>
+    <div className="max-w-5xl mx-auto px-4 py-10">
+      <h1 className="text-5xl font-bold mb-10 text-center">
+        Cart
+      </h1>
 
       {cart.length === 0 ? (
-        <h2>Cart is Empty</h2>
+        <p className="text-center text-2xl">
+          Cart is empty
+        </p>
       ) : (
         <>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns:
-                "repeat(auto-fit,minmax(250px,1fr))",
-              gap: "20px",
-              marginTop: "20px",
-            }}
-          >
-            {cart.map((item) => (
+          <div className="space-y-6">
+            {cart.map((item, index) => (
               <div
-                key={item._id}
-                style={{
-                  border: "1px solid #ddd",
-                  borderRadius: "10px",
-                  padding: "15px",
-                  background: "white",
-                }}
+                key={index}
+                className="bg-white shadow-lg rounded-2xl p-5 flex justify-between items-center"
               >
+                <div>
+                  <h2 className="text-2xl font-bold">
+                    {item.name}
+                  </h2>
+
+                  <p className="text-xl mt-2">
+                    ₹{item.price}
+                  </p>
+                </div>
+
                 <img
                   src={item.image}
                   alt={item.name}
-                  style={{
-                    width: "100%",
-                    height: "200px",
-                    objectFit: "cover",
-                    borderRadius: "10px",
-                  }}
+                  className="w-28 h-28 object-cover rounded-xl"
                 />
-
-                <h2>{item.name}</h2>
-
-                <h3>₹{item.price}</h3>
-
-                <p>
-                  Quantity:
-                  <button
-                    onClick={() =>
-                      decreaseQty(
-                        item._id,
-                        item.qty
-                      )
-                    }
-                    style={{
-                      marginLeft: "10px",
-                      marginRight: "10px",
-                    }}
-                  >
-                    -
-                  </button>
-
-                  {item.qty}
-
-                  <button
-                    onClick={() =>
-                      increaseQty(item)
-                    }
-                    style={{
-                      marginLeft: "10px",
-                    }}
-                  >
-                    +
-                  </button>
-                </p>
-
-                <h3>
-                  Total: ₹
-                  {item.price * item.qty}
-                </h3>
-
-                <button
-                  onClick={() =>
-                    removeFromCart(item._id)
-                  }
-                  style={{
-                    background: "red",
-                    color: "white",
-                    padding: "10px",
-                    border: "none",
-                    borderRadius: "5px",
-                    cursor: "pointer",
-                  }}
-                >
-                  Remove
-                </button>
               </div>
             ))}
           </div>
 
-          <h2 style={{ marginTop: "30px" }}>
-            Grand Total: ₹{total}
-          </h2>
+          <div className="mt-10 text-center">
+            <h2 className="text-4xl font-bold">
+              Total: ₹{total}
+            </h2>
 
-          <a href="/checkout">
             <button
-              style={{
-                marginTop: "20px",
-                background: "green",
-                color: "white",
-                padding: "15px",
-                border: "none",
-                borderRadius: "5px",
-                cursor: "pointer",
-              }}
+              onClick={() => navigate("/checkout")}
+              className="bg-green-500 hover:bg-green-600 text-white px-8 py-4 rounded-2xl mt-6 text-xl font-semibold"
             >
               Proceed To Checkout
             </button>
-          </a>
+          </div>
         </>
       )}
     </div>
   );
 }
+
+export default Cart;

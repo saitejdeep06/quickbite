@@ -1,24 +1,36 @@
+// client/src/components/Navbar.jsx
+
 import { Link } from "react-router-dom";
 
-export default function Navbar() {
+function Navbar() {
   return (
-    <nav
-      style={{
-        padding: "20px",
-        display: "flex",
-        justifyContent: "space-between",
-        background: "#111",
-        color: "white",
-      }}
-    >
-      <h2>QuickBite 🍔</h2>
+    <nav className="bg-orange-500 shadow-lg">
+      <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+        <Link
+          to="/"
+          className="text-white text-4xl font-bold"
+        >
+          QuickBite
+        </Link>
 
-      <div style={{ display: "flex", gap: "20px" }}>
-        <Link to="/" style={{ color: "white" }}>Home</Link>
-        <Link to="/cart" style={{ color: "white" }}>Cart</Link>
-        <Link to="/orders" style={{ color: "white" }}>Orders</Link>
-        <Link to="/login" style={{ color: "white" }}>Login</Link>
+        <div className="flex gap-6">
+          <Link
+            to="/"
+            className="text-white text-lg font-semibold hover:text-yellow-200"
+          >
+            Home
+          </Link>
+
+          <Link
+            to="/cart"
+            className="text-white text-lg font-semibold hover:text-yellow-200"
+          >
+            Cart
+          </Link>
+        </div>
       </div>
     </nav>
   );
 }
+
+export default Navbar;

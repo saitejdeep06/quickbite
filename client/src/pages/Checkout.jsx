@@ -1,50 +1,36 @@
+// client/src/pages/Checkout.jsx
+
 function Checkout() {
-  const handlePayment = () => {
-    const options = {
-      key: "rzp_test_1234567890",
-      amount: 50000,
-      currency: "INR",
-      name: "QuickBite",
-      description: "Food Order Payment",
-
-      handler: function () {
-        alert("Payment Successful 🎉");
-      },
-
-      prefill: {
-        name: "Sai",
-        email: "sai@test.com",
-        contact: "9999999999",
-      },
-
-      theme: {
-        color: "#000000",
-      },
-    };
-
-    const razor = new window.Razorpay(options);
-    razor.open();
+  const payNow = () => {
+    alert("Payment Successful");
   };
 
   return (
-    <div style={{ padding: "40px" }}>
-      <h1>Checkout Page 💳</h1>
+    <div className="flex justify-center items-center min-h-[80vh] px-4">
+      <div className="bg-white shadow-2xl rounded-3xl p-8 w-full max-w-md">
+        <h1 className="text-4xl font-bold text-center mb-8">
+          Checkout
+        </h1>
 
-      <button
-        onClick={handlePayment}
-        style={{
-          marginTop: "20px",
-          background: "green",
-          color: "white",
-          padding: "15px",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer",
-          fontSize: "18px",
-        }}
-      >
-        Pay With Razorpay
-      </button>
+        <input
+          type="text"
+          placeholder="Full Name"
+          className="w-full border p-4 rounded-xl mb-5"
+        />
+
+        <input
+          type="text"
+          placeholder="Address"
+          className="w-full border p-4 rounded-xl mb-5"
+        />
+
+        <button
+          onClick={payNow}
+          className="bg-orange-500 hover:bg-orange-600 text-white w-full py-4 rounded-xl text-xl font-semibold"
+        >
+          Pay Now
+        </button>
+      </div>
     </div>
   );
 }
